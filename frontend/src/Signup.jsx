@@ -28,7 +28,7 @@ const Signup = () => {
       )
       if (response.data) {
         // Navigate to login or dashboard on success
-        navigate('/dashboard')
+        navigate('/login')
         console.log(response.data)
       }
     } catch (err) {
