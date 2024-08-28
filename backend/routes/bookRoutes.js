@@ -3,6 +3,7 @@ import {
   addBook,
   deleteBook,
   editBook,
+  getAllBooks,
   getUserBooks,
 } from '../controllers/bookController.js'
 import protectRoute from '../middlewares/protectRoute.js' // Assuming you have an auth middleware to protect routes
@@ -20,5 +21,8 @@ router.put('/:bookId', protectRoute, editBook)
 
 // get all books listed by user
 router.get('/mybooks', protectRoute, getUserBooks)
+
+// get all books
+router.get('/allbooks', protectRoute, getAllBooks)
 
 export default router

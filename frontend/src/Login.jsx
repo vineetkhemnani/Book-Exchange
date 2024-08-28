@@ -16,11 +16,15 @@ const Login = () => {
         {
           username,
           password,
+        },
+        {
+          withCredentials: true, // Ensures cookies are sent and received with the request
         }
       )
 
+      // console.log(response.data)
       // Store the token in localStorage
-      localStorage.setItem('token', response.data.token)
+      localStorage.setItem('token', response.data)
 
       // Redirect to the dashboard
       navigate('/dashboard')

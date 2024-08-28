@@ -17,14 +17,13 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const { data } = await axios.get(
+        const {data} = await axios.get(
           'http://localhost:5000/api/books/mybooks',
           {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true, // This ensures cookies are sent with the request
           }
         )
+
         setBooks(data)
       } catch (err) {
         console.error('Error fetching books:', err)
