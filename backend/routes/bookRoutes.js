@@ -6,6 +6,7 @@ import {
   getAllBooks,
   getUserBooks,
   getBooksByOtherUsers,
+  getMatchingBooks,
 } from '../controllers/bookController.js'
 import protectRoute from '../middlewares/protectRoute.js' // Assuming you have an auth middleware to protect routes
 
@@ -28,5 +29,7 @@ router.get('/allbooks', protectRoute, getAllBooks)
 
 // get books listed by others
 router.get('/others', protectRoute, getBooksByOtherUsers)
+
+router.get('/matchbooks', protectRoute, getMatchingBooks)
 
 export default router

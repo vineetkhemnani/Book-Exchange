@@ -30,6 +30,12 @@ const userSchema = new Schema({
       ref: 'Book',
     },
   ],
+  genreInterestedIn: [
+    {
+      type: String,
+      trim: true,
+    },
+  ],
   booksInterestedIn: [
     {
       type: String,

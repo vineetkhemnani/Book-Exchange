@@ -10,11 +10,13 @@ export const addBook = async (req, res) => {
     if (!title || !author || !genre) {
       return res.status(400).json({ error: 'Please fill all fields' })
     }
-
+    const genreKeywords = genre.toLowerCase().split(' ')
+    console.log(genreKeywords)
     const newBook = new Book({
       title,
       author,
       genre,
+      genreKeywords,
       listedBy: userId,
     })
 
@@ -23,8 +25,13 @@ export const addBook = async (req, res) => {
     // Add the book to the user's booksListed array
     const user = await User.findById(userId)
     user.booksListed.push(savedBook._id)
-    await user.save()
 
+    // Update genreInterestedIn with unique genres
+    const existingGenres = new Set(user.genreInterestedIn) // Convert to Set for uniqueness
+    existingGenres.add(genre.toLowerCase().trim()) // Add the new genre, handling case-insensitivity
+    user.genreInterestedIn = Array.from(existingGenres) // Convert back to array
+
+    await user.save()
     res.status(201).json(savedBook)
   } catch (err) {
     res.status(500).json({ error: err.message })
@@ -34,24 +41,26 @@ export const addBook = async (req, res) => {
 // Controller to delete a book by its ID
 export const deleteBook = async (req, res) => {
   try {
-    const bookId = req.params.bookId;
-    const userId = req.user._id;
+    const bookId = req.params.bookId
+    const userId = req.user._id
 
     // Find the book by ID and ensure it belongs to the authenticated user
-    const book = await Book.findOne({ _id: bookId, listedBy: userId });
+    const book = await Book.findOne({ _id: bookId, listedBy: userId })
 
     if (!book) {
-      return res.status(404).json({ error: 'Book not found or not authorized to delete' });
+      return res
+        .status(404)
+        .json({ error: 'Book not found or not authorized to delete' })
     }
 
     // Delete the book
-    await Book.findByIdAndDelete(bookId);
+    await Book.findByIdAndDelete(bookId)
 
-    res.status(200).json({ message: 'Book removed' });
+    res.status(200).json({ message: 'Book removed' })
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message })
   }
-};
+}
 
 // Edit a book
 export const editBook = async (req, res) => {
@@ -83,24 +92,23 @@ export const editBook = async (req, res) => {
   }
 }
 
-
 // Controller to get all books listed by the authenticated user
 export const getUserBooks = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user._id
 
     // Find all books listed by the user
-    const books = await Book.find({ listedBy: userId });
+    const books = await Book.find({ listedBy: userId })
 
     if (!books) {
-      return res.status(404).json({ error: 'No books found for this user' });
+      return res.status(404).json({ error: 'No books found for this user' })
     }
 
-    res.status(200).json(books);
+    res.status(200).json(books)
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message })
   }
-};
+}
 
 // get all books
 export const getAllBooks = async (req, res) => {
@@ -126,6 +134,30 @@ export const getBooksByOtherUsers = async (req, res) => {
     }
 
     res.status(200).json(books)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+    console.error('Error fetching books by other users:', error)
+  }
+}
+
+export const getMatchingBooks = async (req, res) => {
+  try {
+    const currentUser = req.user
+    const books = await Book.find({ listedBy: { $ne: currentUser._id } }).populate(
+      'listedBy',
+      'username email'
+    )
+    const filteredBooks = books.filter((book) => {
+      // Check if any genre in genreKeywords matches a genre in genreInterestedIn
+      const hasMatchingGenre = book.genreKeywords.some((genre) =>
+        currentUser.genreInterestedIn.includes(genre.toLowerCase().trim())
+      )
+      return hasMatchingGenre && book.listedBy !== currentUser._id
+    })
+    if (!filteredBooks.length) {
+      return res.status(404).json({ message: 'No books found by other users' })
+    }
+    res.status(200).json(filteredBooks)
   } catch (error) {
     res.status(500).json({ message: error.message })
     console.error('Error fetching books by other users:', error)

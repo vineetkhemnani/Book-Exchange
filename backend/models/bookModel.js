@@ -17,6 +17,11 @@ const bookSchema = new Schema({
     required: true,
     trim: true,
   },
+  genreKeywords: [{
+    type: String,
+    required: true,
+    trim: true,
+  }],
   listedBy: {
     type: Schema.Types.ObjectId,
     ref: 'User',
