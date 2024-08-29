@@ -6,8 +6,7 @@ import EditBookModal from './EditBookModal'
 
 const Dashboard = () => {
   const [books, setBooks] = useState([])
-  const [editingBookId, setEditingBookId] = useState(null)
-  const [editForm, setEditForm] = useState({ title: '', author: '', genre: '' })
+  
 const [editingBook, setEditingBook] = useState(null)
   // add book modal state
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false)
@@ -176,6 +175,7 @@ const [editingBook, setEditingBook] = useState(null)
         isOpen={isAddBookModalOpen}
         onClose={() => setIsAddBookModalOpen(false)}
         onBookAdded={handleBookAdded}
+        existingBooks={books}
       />
       {editingBook && (
         <EditBookModal
