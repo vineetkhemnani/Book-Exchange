@@ -7,14 +7,14 @@ import Signup from './Signup.jsx'
 import Dashboard from './Dashboard.jsx'
 import Login from './Login.jsx'
 import BookDiscovery from './BookDiscovery.jsx'
-import MatchedBooks from '../MatchedBooks.jsx'
+import MatchedBooks from './MatchedBooks.jsx'
 
 const token = localStorage.getItem('token')
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: token ? <Navigate to="/dashboard" /> : <Navigate to="/login" />,
+    element: <App/>,
   },
   {
     path: '/signup',

@@ -44,6 +44,8 @@ export const deleteBook = async (req, res) => {
     const bookId = req.params.bookId
     const userId = req.user._id
 
+    const user = await User.findById(userId)
+
     // Find the book by ID and ensure it belongs to the authenticated user
     const book = await Book.findOne({ _id: bookId, listedBy: userId })
 
@@ -56,6 +58,11 @@ export const deleteBook = async (req, res) => {
     // Delete the book
     await Book.findByIdAndDelete(bookId)
 
+    // also remove it from booksListed in user model
+    await user.booksListed.pop(book._id)
+    await user.genreInterestedIn.pop(book.genre.toLowerCase())
+
+    await user.save()
     res.status(200).json({ message: 'Book removed' })
   } catch (err) {
     res.status(500).json({ error: err.message })

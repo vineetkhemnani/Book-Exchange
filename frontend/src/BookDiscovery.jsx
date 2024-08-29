@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 const BookDiscovery = () => {
   const [books, setBooks] = useState([])
@@ -42,9 +43,17 @@ const BookDiscovery = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">
-        Books from Other Users
-      </h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">
+          Books from Other Users
+        </h2>
+        <Link
+          to="/dashboard"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          Back to Dashboard
+        </Link>
+      </div>
 
       {/* Genre Filter */}
       <div className="mb-6">
