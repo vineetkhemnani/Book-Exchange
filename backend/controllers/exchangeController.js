@@ -23,6 +23,7 @@ export const createExchangeRequest = async (req, res) => {
   }
 }
 
+// outgoing request details
 export const getExchangeReqMadebyUser = async (req, res) => {
   try {
     const userId = req.user._id
@@ -87,5 +88,24 @@ export const deleteExchangeRequest = async (req, res) => {
     res.status(200).json({ message: 'Exchange request deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+// incoming requests
+export const getIncomingExchangeRequests = async (req, res) => {
+  try {
+    const currentUserId = req.user._id; 
+
+    const requests = await ExchangeRequest.find({ listedBy: currentUserId })
+      .populate('requestedBy', 'username email')
+      .populate('bookRequested', 'title author')
+      .sort({ dateRequested: -1 });
+
+    res.status(200).json({
+      count: requests.length,
+      requests: requests
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching incoming exchange requests', error: error.message });
   }
 };

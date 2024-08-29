@@ -8,13 +8,14 @@ import Dashboard from './Dashboard.jsx'
 import Login from './Login.jsx'
 import BookDiscovery from './BookDiscovery.jsx'
 import MatchedBooks from './MatchedBooks.jsx'
+import ExchangeRequests from './ExchangeRequests.jsx'
 
 const token = localStorage.getItem('token')
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App/>,
+    element: <App />,
   },
   {
     path: '/signup',
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
   {
     path: '/recommended',
     element: token ? <MatchedBooks /> : <Navigate to="/login" />,
+  },
+  {
+    path: '/exchange-requests',
+    element: token ? <ExchangeRequests /> : <Navigate to="/login" />,
   },
 ])
 
