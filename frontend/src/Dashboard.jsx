@@ -1,9 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import AddBookModal from './AddBookModal'
+import EditBookModal from './EditBookModal'
 
 const Dashboard = () => {
   const [books, setBooks] = useState([])
+  const [editingBookId, setEditingBookId] = useState(null)
+  const [editForm, setEditForm] = useState({ title: '', author: '', genre: '' })
+const [editingBook, setEditingBook] = useState(null)
+  // add book modal state
+  const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false)
   const navigate = useNavigate()
 
   const token = localStorage.getItem('token')
@@ -36,12 +43,9 @@ const Dashboard = () => {
   // Delete a book
   const handleDeleteBook = async (bookId) => {
     try {
-      await axios.delete(
-        `http://localhost:5000/api/books/delete/${bookId}`,
-        {
-          withCredentials: true,
-        }
-      )
+      await axios.delete(`http://localhost:5000/api/books/delete/${bookId}`, {
+        withCredentials: true,
+      })
 
       // Update the books state to remove the deleted book
       setBooks(books.filter((book) => book._id !== bookId))
@@ -51,10 +55,30 @@ const Dashboard = () => {
   }
 
   // Edit a book
-  const handleEditBook = (bookId) => {
-    navigate(`/edit-book/${bookId}`)
+  const handleEditBook = (book) => {
+    setEditingBook(book)
   }
 
+  const handleCloseEditModal = () => {
+    setEditingBook(null)
+  }
+
+  const handleSaveEdit = async (bookId, editedBook) => {
+    try {
+      await axios.put(`http://localhost:5000/api/books/${bookId}`, editedBook, {
+        withCredentials: true,
+      })
+
+      setBooks(
+        books.map((book) =>
+          book._id === bookId ? { ...book, ...editedBook } : book
+        )
+      )
+      setEditingBook(null)
+    } catch (err) {
+      console.error('Error updating book:', err)
+    }
+  }
   // Logout function
   const handleLogout = async () => {
     try {
@@ -71,11 +95,14 @@ const Dashboard = () => {
     navigate('/login')
   }
 
-  // Navigate to the Add Book page
+  // handling add book 
   const handleAddBook = () => {
-    navigate('/add-book')
+    setIsAddBookModalOpen(true)
   }
 
+  const handleBookAdded = (newBook) => {
+    setBooks([...books, newBook])
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
@@ -88,11 +115,12 @@ const Dashboard = () => {
           >
             Add Book
           </button>
-          <Link to={`/book-discovery`}
+          <Link
+            to={`/book-discovery`}
             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 mr-2"
           >
             Find Books
-          </Link >
+          </Link>
           <button
             onClick={handleLogout}
             className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
@@ -117,25 +145,41 @@ const Dashboard = () => {
                 <p className="text-sm text-gray-700">Author: {book.author}</p>
                 <p className="text-sm text-gray-500">Genre: {book.genre}</p>
               </div>
-              <div className="mt-4 flex justify-between">
+
+              <div className="flex justify-between mt-4">
                 <button
-                  onClick={() => handleEditBook(book._id)}
-                  className="px-6 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+                  onClick={() => handleEditBook(book)}
+                  className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
                 >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDeleteBook(book._id)}
-                  className="px-6 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                  className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
                 >
                   Delete
                 </button>
               </div>
+
+              
             </div>
           ))}
         </div>
       ) : (
         <p className="text-gray-600">You have not listed any books yet.</p>
+      )}
+      <AddBookModal
+        isOpen={isAddBookModalOpen}
+        onClose={() => setIsAddBookModalOpen(false)}
+        onBookAdded={handleBookAdded}
+      />
+      {editingBook && (
+        <EditBookModal
+          book={editingBook}
+          isOpen={!!editingBook}
+          onClose={handleCloseEditModal}
+          onSave={handleSaveEdit}
+        />
       )}
     </div>
   )
