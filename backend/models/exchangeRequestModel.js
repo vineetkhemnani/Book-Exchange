@@ -2,9 +2,9 @@ import mongoose from 'mongoose'
 const { Schema,model } = mongoose
 
 const exchangeRequestSchema = new Schema({
-  bookOffered: {
+  requestedBy: {
     type: Schema.Types.ObjectId,
-    ref: 'Book',
+    ref: 'User',
     required: true,
   },
   bookRequested: {
@@ -12,16 +12,18 @@ const exchangeRequestSchema = new Schema({
     ref: 'Book',
     required: true,
   },
-  requestedBy: {
+  listedBy: {
+    // owner of the book
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
-  offeredTo: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
+
+  // offeredTo: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'User',
+  //   required: true,
+  // },
   status: {
     type: String,
     enum: ['pending', 'accepted', 'rejected'],
