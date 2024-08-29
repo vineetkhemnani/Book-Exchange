@@ -20,8 +20,6 @@ router.post('/signup', signupUser)
 router.post('/login', loginUser)
 // when you hit /api/users/logout below function executed => logs out the user
 router.post('/logout', logoutUser)
-// when you hit /api/users/follow/:id => follow-unfollow user using the dynamic id of the user
-// protectRoute acts as a middleware => cannot follow someone if you are not logged in
-router.post('/follow/:id', protectRoute, followUnfollowUser)
+
 
 export default router
