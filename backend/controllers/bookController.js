@@ -112,3 +112,22 @@ export const getAllBooks = async (req, res) => {
     console.error('Error fetching books:', err)
   }
 }
+
+export const getBooksByOtherUsers = async (req, res) => {
+  try {
+    // Find books where the owner is not the logged-in user
+    const books = await Book.find({ listedBy: { $ne: req.user._id } }).populate(
+      'listedBy',
+      'username email'
+    )
+
+    if (!books.length) {
+      return res.status(404).json({ message: 'No books found by other users' })
+    }
+
+    res.status(200).json(books)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+    console.error('Error fetching books by other users:', error)
+  }
+}
