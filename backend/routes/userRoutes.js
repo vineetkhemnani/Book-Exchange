@@ -3,7 +3,6 @@ import {
   signupUser,
   loginUser,
   logoutUser,
-  followUnfollowUser,
 //   updateUser,
   getUserProfile,
 } from '../controllers/userController.js'
