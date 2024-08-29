@@ -19,11 +19,7 @@ const exchangeRequestSchema = new Schema({
     required: true,
   },
 
-  // offeredTo: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'User',
-  //   required: true,
-  // },
+
   status: {
     type: String,
     enum: ['pending', 'accepted', 'rejected'],
