@@ -17,7 +17,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchBooks = async () => {
       try {
-        const {data} = await axios.get(
+        const { data } = await axios.get(
           'http://localhost:5000/api/books/mybooks',
           {
             withCredentials: true, // This ensures cookies are sent with the request
@@ -34,8 +34,19 @@ const Dashboard = () => {
   }, [])
 
   // Logout function
-  const handleLogout = () => {
+  const handleLogout = async () => {
     // Clear authentication tokens or session data
+    try {
+      // Send a request to the backend to clear the session cookie
+      await axios.post(
+        'http://localhost:5000/api/users/logout',
+        {},
+        { withCredentials: true } // Ensure cookies are sent and received
+      )
+    } catch(err) {
+      console.log(err)
+    }
+
     localStorage.removeItem('token')
     navigate('/login')
   }
