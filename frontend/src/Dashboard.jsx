@@ -6,8 +6,8 @@ import EditBookModal from './EditBookModal'
 
 const Dashboard = () => {
   const [books, setBooks] = useState([])
-  
-const [editingBook, setEditingBook] = useState(null)
+
+  const [editingBook, setEditingBook] = useState(null)
   // add book modal state
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false)
   const navigate = useNavigate()
@@ -24,7 +24,7 @@ const [editingBook, setEditingBook] = useState(null)
     const fetchBooks = async () => {
       try {
         const { data } = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/books/mybooks`,
+          `${import.meta.env.VITE_LOCAL_API_URL}/api/books/mybooks`,
           {
             withCredentials: true, // This ensures cookies are sent with the request
           }
@@ -101,7 +101,7 @@ const [editingBook, setEditingBook] = useState(null)
     navigate('/login')
   }
 
-  // handling add book 
+  // handling add book
   const handleAddBook = () => {
     setIsAddBookModalOpen(true)
   }
@@ -147,7 +147,9 @@ const [editingBook, setEditingBook] = useState(null)
           </button>
         </div>
       </div>
-      <h3 className="text-xl font-bold text-blue-800 text-left">Logged in as: {token}</h3>
+      <h3 className="text-xl font-bold text-blue-800 text-left">
+        Logged in as: {token}
+      </h3>
 
       <h2 className="text-xl font-semibold text-gray-700 mb-6">My Books</h2>
       {books.length > 0 ? (
