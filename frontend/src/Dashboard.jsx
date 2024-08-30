@@ -24,7 +24,7 @@ const Dashboard = () => {
     const fetchBooks = async () => {
       try {
         const { data } = await axios.get(
-          `${import.meta.env.VITE_LOCAL_API_URL}/api/books/mybooks`,
+          `${import.meta.env.VITE_API_URL}/api/books/mybooks`,
           {
             withCredentials: true, // This ensures cookies are sent with the request
           }
