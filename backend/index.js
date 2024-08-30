@@ -7,7 +7,6 @@ import userRoutes from './routes/userRoutes.js'
 import bookRoutes from './routes/bookRoutes.js'
 import exchangeRoutes from './routes/exchangeRoutes.js'
 
-
 dotenv.config()
 
 connectDB()
@@ -18,9 +17,7 @@ const PORT = process.env.PORT || 5000
 app.use(express.json({ limit: '50mb' })) //parse JSON data in the req.body
 app.use(express.urlencoded({ extended: true })) //usually parses form data extended:true used to parse nested data if present
 app.use(cookieParser()) //parse cookies
-var allowedOrigins = [
-  'http://localhost:5173',
-]
+var allowedOrigins = ['http://localhost:5173']
 
 app.use(
   cors({
@@ -34,8 +31,8 @@ app.use(
 )
 
 // test route
-app.get('/',(req,res)=>{
-  res.status(200).send("Server is ready")
+app.get('/', (req, res) => {
+  res.status(200).send('Server is running')
 })
 
 // Routes
