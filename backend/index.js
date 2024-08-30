@@ -19,13 +19,21 @@ app.use(express.urlencoded({ extended: true })) //usually parses form data exten
 app.use(cookieParser()) //parse cookies
 var allowedOrigins = ['http://localhost:5173',`https://book-exchange-frontend.netlify.app`]
 
+// app.use(
+//   cors({
+//     origin: allowedOrigins,
+//     methods: ['POST', 'GET', 'DELETE', 'PUT'],
+
+//     // exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+
+//     credentials: true,
+//   })
+// )
+
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: '*', // Allow all origins temporarily for debugging
     methods: ['POST', 'GET', 'DELETE', 'PUT'],
-
-    // exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
-
     credentials: true,
   })
 )
