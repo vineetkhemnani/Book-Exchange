@@ -27,7 +27,8 @@ const Login = () => {
       localStorage.setItem('token', response.data)
 
       // Redirect to the dashboard
-      navigate('/dashboard')
+      navigate('/dashboard', { replace: true })
+      // window.location.href = '/dashboard'
     } catch (err) {
       setError('Invalid username or password')
       console.error('Login error:', err)
