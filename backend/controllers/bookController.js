@@ -10,13 +10,10 @@ export const addBook = async (req, res) => {
     if (!title || !author || !genre) {
       return res.status(400).json({ error: 'Please fill all fields' })
     }
-    const genreKeywords = genre.toLowerCase().split(' ')
-    console.log(genreKeywords)
     const newBook = new Book({
       title,
       author,
       genre,
-      genreKeywords,
       listedBy: userId,
     })
 
@@ -26,11 +23,9 @@ export const addBook = async (req, res) => {
     const user = await User.findById(userId)
     user.booksListed.push(savedBook._id)
 
-    // Update genreInterestedIn with unique genres
-    const existingGenres = new Set(user.genreInterestedIn) // Convert to Set for uniqueness
-    existingGenres.add(genre.toLowerCase().trim()) // Add the new genre, handling case-insensitivity
-    user.genreInterestedIn = Array.from(existingGenres) // Convert back to array
-
+    user.genreInterestedIn = [
+      ...new Set([...user.genreInterestedIn, genre.toLowerCase()]),
+    ]
     await user.save()
     res.status(201).json(savedBook)
   } catch (err) {
@@ -59,8 +54,24 @@ export const deleteBook = async (req, res) => {
     await Book.findByIdAndDelete(bookId)
 
     // also remove it from booksListed in user model
-    await user.booksListed.pop(book._id)
-    await user.genreInterestedIn.pop(book.genre.toLowerCase())
+    // Remove the book reference from the user's booksListed array
+    user.booksListed = user.booksListed.filter(
+      (listedBookId) => listedBookId.toString() !== bookId
+    )
+
+    // Remove the book's genre from the user's genreInterestedIn array
+    // Only if there are no other books by the user with the same genre
+    const userHasOtherBooksInGenre = await Book.exists({
+      listedBy: userId,
+      genre: book.genre,
+      _id: { $ne: bookId },
+    })
+
+    if (!userHasOtherBooksInGenre) {
+      user.genreInterestedIn = user.genreInterestedIn.filter(
+        (genre) => genre.toLowerCase() !== book.genre.toLowerCase()
+      )
+    }
 
     await user.save()
     res.status(200).json({ message: 'Book removed' })
@@ -69,12 +80,12 @@ export const deleteBook = async (req, res) => {
   }
 }
 
-// Edit a book
 export const editBook = async (req, res) => {
   try {
     const { bookId } = req.params
     const { title, author, genre } = req.body
     const userId = req.user._id
+    const user = req.user
 
     const book = await Book.findById(bookId)
 
@@ -87,11 +98,35 @@ export const editBook = async (req, res) => {
     }
 
     // Update book details
+    const previousGenre = book.genre
     book.title = title || book.title
     book.author = author || book.author
     book.genre = genre || book.genre
 
     const updatedBook = await book.save()
+
+    if (previousGenre !== book.genre) {
+      // Check if user has other books from previous genre
+      const userHasOtherBooksInPreviousGenre = await Book.exists({
+        listedBy: userId,
+        genre: previousGenre,
+        _id: { $ne: bookId },
+      })
+
+      // console.log(userHasOtherBooksInPreviousGenre)
+      // If user has no books from previous genre, remove that genre from user.genreInterestedIn array
+      if (!userHasOtherBooksInPreviousGenre) {
+        console.log("no book")
+        user.genreInterestedIn = user.genreInterestedIn.filter(
+          (g) => g.toLowerCase() !== previousGenre.toLowerCase()
+        )
+      } else {
+          user.genreInterestedIn.push(book.genre.toLowerCase())
+
+      }
+
+      await user.save()
+    }
 
     res.json(updatedBook)
   } catch (err) {
@@ -147,26 +182,26 @@ export const getBooksByOtherUsers = async (req, res) => {
   }
 }
 
+// need to work on
 export const getMatchingBooks = async (req, res) => {
-  try {
-    const currentUser = req.user
-    const books = await Book.find({ listedBy: { $ne: currentUser._id } }).populate(
-      'listedBy',
-      'username email'
-    )
-    const filteredBooks = books.filter((book) => {
-      // Check if any genre in genreKeywords matches a genre in genreInterestedIn
-      const hasMatchingGenre = book.genreKeywords.some((genre) =>
-        currentUser.genreInterestedIn.includes(genre.toLowerCase().trim())
-      )
-      return hasMatchingGenre && book.listedBy !== currentUser._id
-    })
-    if (!filteredBooks.length) {
-      return res.status(404).json({ message: 'No books found by other users' })
-    }
-    res.status(200).json(filteredBooks)
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-    console.error('Error fetching books by other users:', error)
-  }
+  //   try {
+  //     const currentUser = req.user
+  //     const books = await Book.find({
+  //       listedBy: { $ne: currentUser._id },
+  //     }).populate('listedBy', 'username email')
+  //     const filteredBooks = books.filter((book) => {
+  //       // Check if any genre in genreKeywords matches a genre in genreInterestedIn
+  //       const hasMatchingGenre = book.genreKeywords.some((genre) =>
+  //         currentUser.genreInterestedIn.includes(genre.toLowerCase().trim())
+  //       )
+  //       return hasMatchingGenre && book.listedBy !== currentUser._id
+  //     })
+  //     if (!filteredBooks.length) {
+  //       return res.status(404).json({ message: 'No books found by other users' })
+  //     }
+  //     res.status(200).json(filteredBooks)
+  //   } catch (error) {
+  //     res.status(500).json({ message: error.message })
+  //     console.error('Error fetching books by other users:', error)
+  //   }
 }
