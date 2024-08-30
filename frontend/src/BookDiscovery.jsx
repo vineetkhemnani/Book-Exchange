@@ -14,7 +14,7 @@ const BookDiscovery = () => {
     const fetchBooks = async () => {
       try {
         const response = await axios.get(
-          'http://localhost:5000/api/books/others',
+          `${import.meta.env.VITE_API_URL}/api/books/others`,
           { withCredentials: true }
         )
         setBooks(response.data)

@@ -23,7 +23,7 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded, existingBooks }) => {
     }
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/books/add`,
+        `${import.meta.env.VITE_API_URL}/api/books/add`,
         newBook,
         { withCredentials: true }
       )

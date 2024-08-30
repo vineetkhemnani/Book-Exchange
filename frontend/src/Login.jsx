@@ -7,12 +7,15 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const navigate = useNavigate()
+  const [isLoading,setIsLoading]=useState(false)
 
   const handleLogin = async (e) => {
     e.preventDefault()
+    setIsLoading(true) // Start loading
+    setError('') // Clear previous errors
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/users/login',
+        `${import.meta.env.VITE_API_URL}/api/users/login`,
         {
           username,
           password,
@@ -32,6 +35,8 @@ const Login = () => {
     } catch (err) {
       setError('Invalid username or password')
       console.error('Login error:', err)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -75,12 +80,22 @@ const Login = () => {
               required
             />
           </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none"
-          >
-            Login
-          </button>
+          {isLoading ? (
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none"
+              disabled
+            >
+              Logging in...
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none"
+            >
+              Login
+            </button>
+          )}
         </form>
         <div className="mt-6 text-center">
           <p className="text-gray-600">Don't have an account?</p>

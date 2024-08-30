@@ -24,7 +24,7 @@ const [editingBook, setEditingBook] = useState(null)
     const fetchBooks = async () => {
       try {
         const { data } = await axios.get(
-          'http://localhost:5000/api/books/mybooks',
+          `${import.meta.env.VITE_API_URL}/api/books/mybooks`,
           {
             withCredentials: true, // This ensures cookies are sent with the request
           }
@@ -42,9 +42,12 @@ const [editingBook, setEditingBook] = useState(null)
   // Delete a book
   const handleDeleteBook = async (bookId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/books/delete/${bookId}`, {
-        withCredentials: true,
-      })
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/books/delete/${bookId}`,
+        {
+          withCredentials: true,
+        }
+      )
 
       // Update the books state to remove the deleted book
       setBooks(books.filter((book) => book._id !== bookId))
@@ -64,9 +67,13 @@ const [editingBook, setEditingBook] = useState(null)
 
   const handleSaveEdit = async (bookId, editedBook) => {
     try {
-      await axios.put(`http://localhost:5000/api/books/${bookId}`, editedBook, {
-        withCredentials: true,
-      })
+      await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/books/${bookId}`,
+        editedBook,
+        {
+          withCredentials: true,
+        }
+      )
 
       setBooks(
         books.map((book) =>
@@ -82,7 +89,7 @@ const [editingBook, setEditingBook] = useState(null)
   const handleLogout = async () => {
     try {
       await axios.post(
-        'http://localhost:5000/api/users/logout',
+        `${import.meta.env.VITE_API_URL}/api/users/logout`,
         {},
         { withCredentials: true }
       )

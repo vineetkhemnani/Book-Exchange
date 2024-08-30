@@ -9,7 +9,7 @@ const ExchangeRequests = () => {
     const getIncomingRequests = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/exchange/incoming`,
+          `${import.meta.env.VITE_API_URL}/api/exchange/incoming`,
           {
             withCredentials: true, // Send cookies with the request
           }
@@ -33,7 +33,7 @@ const ExchangeRequests = () => {
   const handleAccept = async (requestId) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/exchange/${requestId}`,
+        `${import.meta.env.VITE_API_URL}/api/exchange/${requestId}`,
         { action: 'accept' },
         { withCredentials: true }
       )
@@ -50,7 +50,7 @@ const ExchangeRequests = () => {
   const handleReject = async (requestId) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/exchange/${requestId}`,
+        `${import.meta.env.VITE_API_URL}/api/exchange/${requestId}`,
         { action: 'reject' },
         { withCredentials: true }
       )

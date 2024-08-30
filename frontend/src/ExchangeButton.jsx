@@ -11,7 +11,7 @@ const ExchangeButton = ({ book }) => {
     setError(null)
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/exchange/createExchange`,
+        `${import.meta.env.VITE_API_URL}/api/exchange/createExchange`,
         { bookId: book._id },
         {
           withCredentials: true,
