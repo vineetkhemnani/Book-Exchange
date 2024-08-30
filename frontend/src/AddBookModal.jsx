@@ -4,6 +4,7 @@ import axios from 'axios'
 const AddBookModal = ({ isOpen, onClose, onBookAdded, existingBooks }) => {
   const [newBook, setNewBook] = useState({ title: '', author: '', genre: '' })
   const [error, setError] = useState('')
+  const [isLoading,setIsLoading]=useState(false)
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setNewBook((prevBook) => ({ ...prevBook, [name]: value }))
@@ -11,6 +12,7 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded, existingBooks }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
     // edge case to check if the book already exists
     const duplicate = existingBooks.find(
       (book) =>
@@ -32,6 +34,8 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded, existingBooks }) => {
       onClose()
     } catch (error) {
       console.error('Error adding book:', error)
+    }finally{
+      setIsLoading(false)
     }
   }
 
@@ -106,8 +110,9 @@ const AddBookModal = ({ isOpen, onClose, onBookAdded, existingBooks }) => {
             <button
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={isLoading}
             >
-              Add Book
+              {!isLoading?'Add Book':'Adding'}
             </button>
           </div>
         </form>
