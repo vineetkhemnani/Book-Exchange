@@ -116,13 +116,12 @@ export const editBook = async (req, res) => {
       // console.log(userHasOtherBooksInPreviousGenre)
       // If user has no books from previous genre, remove that genre from user.genreInterestedIn array
       if (!userHasOtherBooksInPreviousGenre) {
-        console.log("no book")
+        console.log('no book')
         user.genreInterestedIn = user.genreInterestedIn.filter(
           (g) => g.toLowerCase() !== previousGenre.toLowerCase()
         )
       } else {
-          user.genreInterestedIn.push(book.genre.toLowerCase())
-
+        user.genreInterestedIn.push(book.genre.toLowerCase())
       }
 
       await user.save()
@@ -184,24 +183,33 @@ export const getBooksByOtherUsers = async (req, res) => {
 
 // need to work on
 export const getMatchingBooks = async (req, res) => {
-  //   try {
-  //     const currentUser = req.user
-  //     const books = await Book.find({
-  //       listedBy: { $ne: currentUser._id },
-  //     }).populate('listedBy', 'username email')
-  //     const filteredBooks = books.filter((book) => {
-  //       // Check if any genre in genreKeywords matches a genre in genreInterestedIn
-  //       const hasMatchingGenre = book.genreKeywords.some((genre) =>
-  //         currentUser.genreInterestedIn.includes(genre.toLowerCase().trim())
-  //       )
-  //       return hasMatchingGenre && book.listedBy !== currentUser._id
-  //     })
-  //     if (!filteredBooks.length) {
-  //       return res.status(404).json({ message: 'No books found by other users' })
-  //     }
-  //     res.status(200).json(filteredBooks)
-  //   } catch (error) {
-  //     res.status(500).json({ message: error.message })
-  //     console.error('Error fetching books by other users:', error)
-  //   }
+  try {
+    const currentUser = req.user
+    const currentUserFavGenres = [
+      ...new Set(
+        currentUser.genreInterestedIn.map((genre) => genre.split(' ')).flat()
+      ),
+    ]
+    // console.log(currentUserFavGenres)
+    const books = await Book.find({
+      listedBy: { $ne: currentUser._id },
+    }).populate('listedBy', 'username email')
+    const filteredBooks = books.filter((book) => {
+      const genreKeywordsfromBook = book.genre.toLowerCase().split(' ')
+      
+      // console.log(genreKeywordsfromBook)
+      const hasMatchingGenre = currentUserFavGenres.some((genre) =>
+        genreKeywordsfromBook.includes(genre.toLowerCase().trim())
+      )
+
+      return hasMatchingGenre && book.listedBy !== currentUser._id
+    })
+    if (!filteredBooks.length) {
+      return res.status(404).json({ message: 'No books found by other users' })
+    }
+    res.status(200).json(filteredBooks)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+    console.error('Error fetching books by other users:', error)
+  }
 }
