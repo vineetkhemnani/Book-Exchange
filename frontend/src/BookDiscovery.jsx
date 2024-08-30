@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import ExchangeButton from './ExchangeButton'
+import Book from './Book'
 
 const BookDiscovery = () => {
   const [books, setBooks] = useState([])
@@ -76,19 +78,7 @@ const BookDiscovery = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {filteredBooks.map((book) => (
-          <div key={book._id} className="bg-white rounded-lg shadow-lg p-4">
-            <h3 className="text-lg font-semibold text-gray-900">
-              {book.title}
-            </h3>
-            <p className="text-gray-700">by {book.author}</p>
-            <p className="text-sm text-gray-500">Genre: {book.genre}</p>
-            <p className="text-sm text-gray-500 mt-2">
-              Listed by: {book.listedBy.username}
-            </p>
-            <button className="mt-4 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
-              Request Exchange
-            </button>
-          </div>
+          <Book key={book._id} book={book}/>
         ))}
       </div>
     </div>

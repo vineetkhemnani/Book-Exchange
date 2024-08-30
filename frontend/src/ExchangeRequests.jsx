@@ -4,7 +4,7 @@ import axios from 'axios'
 const ExchangeRequests = () => {
   const [incomingRequests, setIncomingRequests] = useState([])
 
-  // Fetch incoming requests when the component mounts
+  // Fetch incoming requests
   useEffect(() => {
     const getIncomingRequests = async () => {
       try {
