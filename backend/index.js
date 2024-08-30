@@ -33,6 +33,11 @@ app.use(
   })
 )
 
+// test route
+app.get('/',(req,res)=>{
+  res.status(200).send("Server is ready")
+})
+
 // Routes
 app.use('/api/users', userRoutes)
 app.use('/api/books', bookRoutes)
