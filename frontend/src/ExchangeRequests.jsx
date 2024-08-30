@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 const ExchangeRequests = () => {
   const [incomingRequests, setIncomingRequests] = useState([])
@@ -65,9 +66,17 @@ const ExchangeRequests = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">
-        Incoming Exchange Requests
-      </h2>
+      <div className="flex justify-between">
+        <h2 className="text-2xl font-bold text-gray-800">
+          Incoming Exchange Requests
+        </h2>
+        <Link
+          to="/dashboard"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+        >
+          Back to Dashboard
+        </Link>
+      </div>
 
       {incomingRequests.length > 0 ? (
         <div className="space-y-4">
@@ -100,7 +109,9 @@ const ExchangeRequests = () => {
           ))}
         </div>
       ) : (
-        <p className="text-gray-600">No incoming exchange requests.</p>
+        <p className="text-gray-600 mt-20 font-bold text-2xl">
+          No incoming exchange requests.
+        </p>
       )}
     </div>
   )
