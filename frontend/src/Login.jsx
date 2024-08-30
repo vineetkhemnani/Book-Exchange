@@ -24,7 +24,7 @@ const Login = () => {
 
       // console.log(response.data)
       // Store the token in localStorage
-      localStorage.setItem('token', response.data)
+      localStorage.setItem('token', response.data.username)
 
       // Redirect to the dashboard
       navigate('/dashboard', { replace: true })

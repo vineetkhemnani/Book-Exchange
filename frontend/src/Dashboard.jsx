@@ -140,6 +140,7 @@ const [editingBook, setEditingBook] = useState(null)
           </button>
         </div>
       </div>
+      <h3 className="text-xl font-bold text-blue-800 text-left">Logged in as: {token}</h3>
 
       <h2 className="text-xl font-semibold text-gray-700 mb-6">My Books</h2>
       {books.length > 0 ? (
