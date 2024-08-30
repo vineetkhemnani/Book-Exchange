@@ -11,6 +11,8 @@ const Dashboard = () => {
   // add book modal state
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false)
   const navigate = useNavigate()
+    const [isDeleteLoading, setIsDeleteLoading] = useState(false)
+
 
   const token = localStorage.getItem('token')
 
@@ -41,6 +43,7 @@ const Dashboard = () => {
 
   // Delete a book
   const handleDeleteBook = async (bookId) => {
+    setIsDeleteLoading(true)
     try {
       await axios.delete(
         `${import.meta.env.VITE_API_URL}/api/books/delete/${bookId}`,
@@ -53,6 +56,8 @@ const Dashboard = () => {
       setBooks(books.filter((book) => book._id !== bookId))
     } catch (err) {
       console.error('Error deleting book:', err)
+    }finally{
+      setIsDeleteLoading(false)
     }
   }
 
@@ -171,14 +176,15 @@ const Dashboard = () => {
                 <button
                   onClick={() => handleEditBook(book)}
                   className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
-                >
+                  >
                   Edit
                 </button>
                 <button
                   onClick={() => handleDeleteBook(book._id)}
                   className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                  disabled={isDeleteLoading}
                 >
-                  Delete
+                  {!isDeleteLoading?'Delete':'Deleting...'}
                 </button>
               </div>
             </div>
