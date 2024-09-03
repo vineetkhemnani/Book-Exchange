@@ -8,6 +8,7 @@ const MyBooks = lazy(() => import('./MyBooks'))
 
 const Dashboard = () => {
   const [books, setBooks] = useState([])
+  const [isLoading, setIsLoading] = useState(true) // Add loading state
 
   // add book modal state
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false)
@@ -34,6 +35,8 @@ const Dashboard = () => {
         setBooks(data)
       } catch (err) {
         console.error('Error fetching books:', err)
+      }finally{
+        setIsLoading(false)
       }
     }
 
@@ -109,8 +112,11 @@ const Dashboard = () => {
       <h2 className="text-xl font-semibold text-gray-700 mb-6">My Books</h2>
 
       <Suspense fallback={<p>Loading...</p>}>
-
-      <MyBooks books={books} setBooks={setBooks} />
+        {isLoading ? (
+          <p>Loading books...</p>
+        ) : (
+          <MyBooks books={books} setBooks={setBooks} />
+        )}
       </Suspense>
 
       <AddBookModal
