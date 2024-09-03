@@ -9,6 +9,7 @@ const MyBooks = lazy(() => import('./MyBooks'))
 const Dashboard = () => {
   const [books, setBooks] = useState([])
   const [isLoading, setIsLoading] = useState(true) // Add loading state
+  const [isLoggingOut, setIsLoggingOut] = useState(false) // Add logging out state
 
   // add book modal state
   const [isAddBookModalOpen, setIsAddBookModalOpen] = useState(false)
@@ -45,6 +46,7 @@ const Dashboard = () => {
 
   // Logout function
   const handleLogout = async () => {
+    setIsLoggingOut(true)
     try {
       await axios.post(
         `${import.meta.env.VITE_API_URL}/api/users/logout`,
@@ -53,6 +55,8 @@ const Dashboard = () => {
       )
     } catch (err) {
       console.log(err)
+    }finally{
+      setIsLoggingOut(false)
     }
 
     localStorage.removeItem('token')
@@ -100,8 +104,9 @@ const Dashboard = () => {
           <button
             onClick={handleLogout}
             className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+            disabled={isLoggingOut}
           >
-            Logout
+            {isLoggingOut ? 'Logging out' : 'Logout'}
           </button>
         </div>
       </div>
