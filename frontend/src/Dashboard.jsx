@@ -2,6 +2,7 @@ import { useEffect, useState, lazy, Suspense } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import AddBookModal from './AddBookModal'
+import { Book, BookPlus, RefreshCw, Search,LogOut } from 'lucide-react'
 // import MyBooks from './MyBooks'
 
 const MyBooks = lazy(() => import('./MyBooks'))
@@ -36,7 +37,7 @@ const Dashboard = () => {
         setBooks(data)
       } catch (err) {
         console.error('Error fetching books:', err)
-      }finally{
+      } finally {
         setIsLoading(false)
       }
     }
@@ -55,7 +56,7 @@ const Dashboard = () => {
       )
     } catch (err) {
       console.log(err)
-    }finally{
+    } finally {
       setIsLoggingOut(false)
     }
 
@@ -73,23 +74,69 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-700">My Dashboard</h1>
-        <div>
+    <div>
+        <h1 className="text-4xl font-bold text-gray-700">My Dashboard</h1>
+      <div className="flex justify-between items-center mt-6">
+
+        <div className="grid grid-cols-5 gap-4 mb-8">
           <button
+            onClick={handleAddBook}
+            className="flex items-center justify-center px-4 py-3 bg-[#FF6F61] hover:bg-[#E66054] text-white rounded-lg transition-colors duration-300"
+          >
+            <BookPlus className="w-5 h-5 mr-2" />
+            Add New Book
+          </button>
+          <Link
+            to={`/recommended`}
+            className="flex items-center justify-center px-4 py-3 bg-[#36C2CF] hover:bg-[#2BA4AD] text-white rounded-lg transition-colors duration-300"
+          >
+            <Book className="w-5 h-5 mr-2" />
+            Recommended Books
+          </Link>
+          <Link
+            to={`/book-discovery`}
+            className="flex items-center justify-center px-4 py-3 bg-[#4A90E2] hover:bg-[#3A75B2] text-white rounded-lg transition-colors duration-300"
+          >
+            <Search className="w-5 h-5 mr-2" />
+            Find Books
+          </Link>
+          <Link
+            to={`/exchange-requests`}
+            className="flex items-center justify-center px-4 py-3 bg-[#29A19C] hover:bg-[#228B85] text-white rounded-lg transition-colors duration-300"
+          >
+            <RefreshCw className="w-5 h-5 mr-2" />
+            Exchange Requests
+          </Link>
+
+          <button
+            onClick={handleLogout}
+            className={`px-4 py-2 text-white rounded-md flex items-center justify-center ${
+              isLoggingOut
+                ? 'bg-red-500 cursor-not-allowed'
+                : 'bg-red-600 hover:bg-red-700'
+            }`}
+            disabled={isLoggingOut}
+          >
+            {!isLoggingOut && <LogOut className="w-5 h-5" />}
+            <span className={!isLoggingOut ? 'ml-2' : ''}>
+              {isLoggingOut ? 'Logging out' : 'Logout'}
+            </span>
+          </button>
+        </div>
+
+        {/* <button
             onClick={handleAddBook}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 mr-2"
           >
             Add Book
-          </button>
-          <Link
+          </button> */}
+        {/* <Link
             to={`/recommended`}
             className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 mr-2"
           >
             Recommended Books
-          </Link>
-          <Link
+          </Link> */}
+        {/* <Link
             to={`/book-discovery`}
             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 mr-2"
           >
@@ -100,15 +147,7 @@ const Dashboard = () => {
             className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 mr-2"
           >
             Exchange Requests
-          </Link>
-          <button
-            onClick={handleLogout}
-            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
-            disabled={isLoggingOut}
-          >
-            {isLoggingOut ? 'Logging out' : 'Logout'}
-          </button>
-        </div>
+          </Link> */}
       </div>
       <h3 className="text-xl font-bold text-blue-800 text-left">
         Logged in as: {token}
