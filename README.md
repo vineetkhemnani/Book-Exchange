@@ -1,2 +1,2 @@
 #Deployed URL
-- ```https://book-exchange-frontend.netlify.app```
+- ```https://exchange-verse.netlify.app```
