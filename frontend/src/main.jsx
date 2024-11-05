@@ -1,8 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+  Outlet,
+} from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import Signup from './Signup.jsx'
 import Dashboard from './Dashboard.jsx'
 import Login from './Login.jsx'
@@ -10,7 +15,18 @@ import BookDiscovery from './BookDiscovery.jsx'
 import MatchedBooks from './MatchedBooks.jsx'
 import ExchangeRequests from './ExchangeRequests.jsx'
 
-const token = localStorage.getItem('token')
+// Protected Route wrapper component
+const ProtectedRoute = () => {
+  const token = localStorage.getItem('token')
+
+  // Redirect to login if no token is found
+  if (!token) {
+    return <Navigate to="/login" replace />
+  }
+
+  // Render child routes if authenticated
+  return <Outlet />
+}
 
 const router = createBrowserRouter([
   {
@@ -26,20 +42,26 @@ const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path: '/dashboard',
-    element: token ? <Dashboard /> : <Navigate to="/login" />,
-  },
-  {
-    path: '/book-discovery',
-    element: token ? <BookDiscovery /> : <Navigate to="/login" />,
-  },
-  {
-    path: '/recommended',
-    element: token ? <MatchedBooks /> : <Navigate to="/login" />,
-  },
-  {
-    path: '/exchange-requests',
-    element: token ? <ExchangeRequests /> : <Navigate to="/login" />,
+    // Protected routes group
+    element: <ProtectedRoute />,
+    children: [
+      {
+        path: '/dashboard',
+        element: <Dashboard />,
+      },
+      {
+        path: '/book-discovery',
+        element: <BookDiscovery />,
+      },
+      {
+        path: '/recommended',
+        element: <MatchedBooks />,
+      },
+      {
+        path: '/exchange-requests',
+        element: <ExchangeRequests />,
+      },
+    ],
   },
 ])
 
