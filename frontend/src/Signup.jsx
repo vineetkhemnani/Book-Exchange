@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import Logo from './Logo'
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -39,6 +40,7 @@ const Signup = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-3 rounded-xl bg-white shadow-lg">
+        <Logo/>
         <h1 className="text-2xl font-bold text-center text-gray-700">
           Sign Up
         </h1>
