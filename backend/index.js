@@ -20,6 +20,7 @@ app.use(cookieParser()) //parse cookies
 var allowedOrigins = [
   'http://localhost:5173',
   `https://book-exchange-frontend.netlify.app`,
+  `https://exchange-verse.netlify.app`,
 ]
 
 app.use(
