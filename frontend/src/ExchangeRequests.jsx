@@ -66,8 +66,8 @@ const ExchangeRequests = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <div className="flex justify-between">
-        <h2 className="text-2xl font-bold text-gray-800">
+      <div className="flex justify-between mb-10 items-center">
+        <h2 className="md:text-2xl font-bold text-gray-800 text-xl">
           Incoming Exchange Requests
         </h2>
         <Link
